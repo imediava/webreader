@@ -11,7 +11,7 @@ ELEMENTO_SIMPLE = r'^(?P<palabra>[\w]+)$'
 ATRIBUTO_SIN_VALOR = r'^@(?P<atributo>[\w]+)$'
 
 
-class LectorWebsXPath:
+class LectorWebsXPath(object):
 	""" Lector de elementos de paginas web reconocidos por su ruta xpath.
 	
 	Realiza traducciones de XPath a BeautifulSoup que es el lector con el
@@ -43,15 +43,39 @@ class LectorWebsXPath:
 
 
 class LectorTablasHtmlXPath(LectorWebsXPath):
+	
+	def __init__(self,xpathtabla,cadenahtml):
+		super(LectorTablasHtmlXPath,self).__init__(cadenahtml)
+		self.xpathtabla = xpathtabla
+		
+	def leer_campo(self,fila,campo):
+		return self.obtener_valor_celda(fila,campo.columna,campo.decimal,campo.ruta_adicional)
 
-	def obtener_valor_celda(self,xpathtabla,fila,columna,decimal=False,ruta_adicional=''):
-		valor = self.obtener_valor(self.obtener_xpath_celda(xpathtabla,fila,columna) + ruta_adicional)	
+	def obtener_valor_celda(self,fila,columna,decimal=False,ruta_adicional=''):
+		valor = self.obtener_valor(self.obtener_xpath_celda(self.xpathtabla,fila,columna) + ruta_adicional)	
 		if decimal:
 			return tofloat(valor)
 		return valor
 
 	def obtener_xpath_celda(self,xpathtabla,fila,columna):
-		return "%s/tr[%s]/td[%s]" % (xpathtabla,fila,columna)	 
+		return "%s/tr[%s]/td[%s]" % (xpathtabla,fila,columna)
+		
+
+class TablaHTML:
+	
+	def __init__(self,ruta_xpath,fila_inicio,filas_sin_leer_al_final):
+		self.ruta_xpath = ruta_xpath
+		self.fila_inicio = fila_inicio
+		self.filas_sin_leer_al_final = filas_sin_leer_al_final
+		
+		
+class CampoCeldaTablaHTML:
+	
+	def __init__(self,columna,decimal=False,ruta_adicional=''):
+		self.columna = columna
+		self.decimal = decimal
+		self.ruta_adicional = ruta_adicional
+		
 
 import locale
 #Asigna como local el es_UTF8

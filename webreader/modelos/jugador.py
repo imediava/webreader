@@ -1,4 +1,4 @@
-class Jugador():
+class Jugador(object):
 
     nombre = ""
     val_media = ""

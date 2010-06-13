@@ -45,6 +45,19 @@ CAMPO_AUTENTIF_CONTROL = 'control'
 
 class AccesoHTTPSupermanager(AccesoHTTP):
 	
+	def __init__(self, datos={}, url_conex=""):
+		if datos == {}:
+			self.datosUsuario = {}
+			self.datosUsuario['usuario'] = 'imediava'
+			self.datosUsuario['clave'] = 'quetepet'
+			self.datosUsuario['control'] = '1'
+			
+		if url_conex == "":
+			self.url_conexion = 'http://supermanager.acb.com/index.php'
+		
+		self.iniciarConexion(self.url_conexion,self.datosUsuario)
+			
+	
 	# Pagina a la que supermanager.acb.com redirecciona cuando la
 	# autenticacion en index.php es correcta
 	PAGINA_REDIRECCION = 'http://supermanager.acb.com/principal.php'
