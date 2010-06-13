@@ -72,6 +72,9 @@ class TablaHTML:
 class CampoCeldaTablaHTML:
 	
 	def __init__(self,columna,decimal=False,ruta_adicional=''):
+		"""
+		La columna es empezando por el 1.
+		"""
 		self.columna = columna
 		self.decimal = decimal
 		self.ruta_adicional = ruta_adicional

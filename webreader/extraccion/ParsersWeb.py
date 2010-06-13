@@ -1,10 +1,13 @@
 from StringIO import StringIO
 from webreader.modelos.jugador import Jugador
+from webreader.modelos.estadisticas_jugador_partido import Estadisticas_jugador_partido
 import acceso
 from LectorXPath import LectorTablasHtmlXPath,LectorTablasHtmlXPath,toBeautifulSoup
 from LectorXPath import CampoCeldaTablaHTML
 from LectorXPath import TablaHTML
 from abc import ABCMeta, abstractmethod,abstractproperty
+
+
 
 class ParserHtml:
     
@@ -21,7 +24,8 @@ class ParserHtml:
         self.lectorXPath = LectorTablasHtmlXPath(self.tabla.ruta_xpath,self.cadena)
         lista = []
 	fila_fin = len(self.lectorXPath.obtener_todos(self.tabla.ruta_xpath,'tr'))
-	for num_fila in range(self.tabla.fila_inicio,fila_fin):
+	ultima_fila_a_leer = fila_fin - self.tabla.filas_sin_leer_al_final
+	for num_fila in range(self.tabla.fila_inicio,ultima_fila_a_leer):
 	    # Creo un elemento del tipo modelo que es un objeto de tipo Class
 	    # si modelo es la clase Jugador es como decir: elemento = Jugador()
 	    elemento = self.clase_modelo()
@@ -87,8 +91,41 @@ class ParserJugadores(ParserHtml):
 	if nombrecampo == 'precio':
 	    return int(valor_original.replace(".",""))
 	return valor_original
+    
+    
+class ParserPartidosJugador(ParserHtml):
+    
+    _tabla = TablaHTML(ruta_xpath = '/html/body/table/tbody/tr[2]/td/table[3]',
+    fila_inicio = 3, filas_sin_leer_al_final = 2)
+    
+    @property
+    def tabla(self):
+	return self._tabla
 
+    _modelo = Estadisticas_jugador_partido
     
+    @property
+    def clase_modelo(self):
+	return self._modelo
     
+    _campos = {
+	'equipos' : CampoCeldaTablaHTML(columna=3,ruta_adicional='/a') ,
+	'minutos_jugados' : CampoCeldaTablaHTML(columna=4) ,
+	'puntos' : CampoCeldaTablaHTML(columna=5) ,
+	'tiros_de_dos' : CampoCeldaTablaHTML(columna=6) ,
+	'tiros_de_tres' : CampoCeldaTablaHTML(columna=7) ,
+	'tiros_libres' : CampoCeldaTablaHTML(columna=8) ,
+	'rebotes' : CampoCeldaTablaHTML(columna=9) ,
+	'asistencias' : CampoCeldaTablaHTML(columna=10) ,
+	'balones_recuperados' : CampoCeldaTablaHTML(columna=11) ,
+	'balones_perdidos' : CampoCeldaTablaHTML(columna=12) ,
+	'valoracion' : CampoCeldaTablaHTML(columna=18)
+    }
     
+    @property
+    def campos(self):
+	return self._campos
+    
+    def tratar_valor(self,nombrecampo,valor_original):
+	return valor_original
 
