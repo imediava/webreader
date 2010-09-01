@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Primero pasos con el lector &mdash; webreader v0.1 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '#',
+        VERSION:     '0.1',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="webreader v0.1 documentation" href="index.html" />
+    <link rel="prev" title="Welcome to webreader’s documentation!" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to webreader’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">webreader v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="primero-pasos-con-el-lector">
+<h1>Primero pasos con el lector<a class="headerlink" href="#primero-pasos-con-el-lector" title="Permalink to this headline">¶</a></h1>
+<p>Enlace a tabla :py:class:<a href="#id1"><span class="problematic" id="id2">`</span></a>webreader.extraccion.LectorXPath.TablaHTML:</p>
+<p>La clase de la que todos los parses tienen que implementar es</p>
+<dl class="class">
+<dt id="webreader.extraccion.ParsersWeb.ParserTablaHtml">
+<em class="property">class </em><tt class="descclassname">webreader.extraccion.ParsersWeb.</tt><tt class="descname">ParserTablaHtml</tt><a class="headerlink" href="#webreader.extraccion.ParsersWeb.ParserTablaHtml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clase abstracta que tienen que implementar todos los
+parsers que quieran leer informacion de una tabla HTML.</p>
+<dl class="attribute">
+<dt id="webreader.extraccion.ParsersWeb.ParserTablaHtml.clase_modelo">
+<tt class="descname">clase_modelo</tt><a class="headerlink" href="#webreader.extraccion.ParsersWeb.ParserTablaHtml.clase_modelo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clase que define los objetos que van a formar la lista que devuelve parsearlista.</p>
+<p>La clase tiene que tener al menos como variables publicas la misma lista de campos
+que los definidos en :py:attribute::<cite>campos</cite></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="webreader.extraccion.ParsersWeb.ParserTablaHtml.parsearlista">
+<tt class="descname">parsearlista</tt><big>(</big><em>url</em><big>)</big><a class="headerlink" href="#webreader.extraccion.ParsersWeb.ParserTablaHtml.parsearlista" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recibe una url y parsea la tabla devolviendo una lista de las filas leidas.</p>
+<p>Los parametros son las propiedades de el parser:
+- Tabla: informacion de como localizar y tratar la tabla.
+- Campos: campos a leer de la tabla.
+- Modelo: clase de python donde se guardaran los datos leidos en una fila.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="webreader.extraccion.ParsersWeb.ParserTablaHtml.tabla">
+<tt class="descname">tabla</tt><a class="headerlink" href="#webreader.extraccion.ParsersWeb.ParserTablaHtml.tabla" title="Permalink to this definition">¶</a></dt>
+<dd><p>Objecto con informacion de la tabla a leer.</p>
+<p>Ver <a href="#id3"><span class="problematic" id="id4">:py:class:`webreader.extraccion.LectorXPath.TablaHTML`</span></a> para mas informacion
+sobre los campos necesarios para describir la tabla.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="webreader.extraccion.ParsersWeb.ParserTablaHtml.tratar_valor">
+<tt class="descname">tratar_valor</tt><big>(</big><em>nombrecampo</em>, <em>valor_original</em><big>)</big><a class="headerlink" href="#webreader.extraccion.ParsersWeb.ParserTablaHtml.tratar_valor" title="Permalink to this definition">¶</a></dt>
+<dd>Permite modificar el valor de un campo que se lee de la tabla html.</dd></dl>
+
+</dd></dl>
+
+<p>y la tabla es:</p>
+<dl class="class">
+<dt id="webreader.extraccion.LectorXPath.TablaHTML">
+<em class="property">class </em><tt class="descclassname">webreader.extraccion.LectorXPath.</tt><tt class="descname">TablaHTML</tt><big>(</big><em>ruta_xpath</em>, <em>fila_inicio</em>, <em>filas_sin_leer_al_final</em><big>)</big><a class="headerlink" href="#webreader.extraccion.LectorXPath.TablaHTML" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">!!Cuidado!! Ten cuidadin.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="index.html"
+                                  title="previous chapter">Welcome to webreader&#8217;s documentation!</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/intro.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to webreader’s documentation!"
+             >previous</a> |</li>
+        <li><a href="index.html">webreader v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2010, imediava.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+    </div>
+  </body>
+</html>
