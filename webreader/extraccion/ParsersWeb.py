@@ -25,21 +25,18 @@ class ParserHtml:
         lista = []
 	fila_fin = len(self.lectorXPath.obtener_todos(self.tabla.ruta_xpath,'tr'))
 	ultima_fila_a_leer = fila_fin - self.tabla.filas_sin_leer_al_final
-	for num_fila in range(self.tabla.fila_inicio,ultima_fila_a_leer):
+	# Ahora se recorre las filas desde la inicial a la final ambas incluidas
+	for num_fila in range(self.tabla.fila_inicio,ultima_fila_a_leer + 1):
 	    # Creo un elemento del tipo modelo que es un objeto de tipo Class
 	    # si modelo es la clase Jugador es como decir: elemento = Jugador()
 	    elemento = self.clase_modelo()
-	    for nombrecampo,campo in self.campos.items():
+	    for campo in self.tabla.campos:
 		valor_original = self.lectorXPath.leer_campo(num_fila,campo)
-		valor = self.tratar_valor(nombrecampo,valor_original)
-		elemento.__setattr__(nombrecampo,valor)
+		valor = campo.tratar_valor(valor_original)
+		elemento.__setattr__(campo.nombre,valor)
 	    lista.append(elemento)
                 
         return lista
-    
-    @abstractmethod
-    def tratar_valor(nombrecampo,valor_original):
-	pass
     
     
     @abstractproperty
@@ -50,15 +47,23 @@ class ParserHtml:
     def clase_modelo(self):
 	pass
     
-    @abstractproperty
-    def campos(self):
-	pass
-    
- 
 
 class ParserJugadores(ParserHtml):
     
-    _tabla = TablaHTML(ruta_xpath = '/html/body/table[2]/tbody/tr/td[3]/table[2]/tbody',
+    _campos = [
+	CampoCeldaTablaHTML(nombre='nombre',columna=4,ruta_adicional='/a/font') ,
+	CampoCeldaTablaHTML(nombre='website',columna=4,ruta_adicional='/a/@href') ,
+	CampoCeldaTablaHTML(nombre='val_jornada',columna=11,decimal=True) ,
+	CampoCeldaTablaHTML(nombre='val_ultimas3',columna=12,decimal=True) ,
+	CampoCeldaTablaHTML(nombre='subir15',columna=13,decimal=True) ,
+	CampoCeldaTablaHTML(nombre='precio',columna=9,
+			    tratar_valor=lambda valor: int(valor.replace(".",""))),
+	CampoCeldaTablaHTML(nombre='val_media',columna=8,decimal=True) ,
+	CampoCeldaTablaHTML(nombre='equipo',columna=6)
+    ]
+    
+    
+    _tabla = TablaHTML(campos=_campos,ruta_xpath = '/html/body/table[2]/tbody/tr/td[3]/table[2]/tbody',
 		      fila_inicio=3,filas_sin_leer_al_final=0)
     
     @property
@@ -72,30 +77,24 @@ class ParserJugadores(ParserHtml):
     def clase_modelo(self):
 	return self._modelo
     
-    _campos = {
-	'nombre' : CampoCeldaTablaHTML(columna=4,ruta_adicional='/a/font') ,
-	'website' : CampoCeldaTablaHTML(columna=4,ruta_adicional='/a/@href') ,
-	'val_jornada' : CampoCeldaTablaHTML(columna=11,decimal=True) ,
-	'val_ultimas3' : CampoCeldaTablaHTML(columna=12,decimal=True) ,
-	'subir15' : CampoCeldaTablaHTML(columna=13,decimal=True) ,
-	'precio' : CampoCeldaTablaHTML(columna=9) ,
-	'val_media' : CampoCeldaTablaHTML(columna=8,decimal=True) ,
-	'equipo' : CampoCeldaTablaHTML(columna=6)
-    }
-    
-    @property
-    def campos(self):
-	return self._campos
-    
-    def tratar_valor(self,nombrecampo,valor_original):
-	if nombrecampo == 'precio':
-	    return int(valor_original.replace(".",""))
-	return valor_original
-    
     
 class ParserPartidosJugador(ParserHtml):
     
-    _tabla = TablaHTML(ruta_xpath = '/html/body/table/tbody/tr[2]/td/table[3]',
+    _campos = [
+	CampoCeldaTablaHTML(nombre='equipos',columna=3,ruta_adicional='/a') ,
+	CampoCeldaTablaHTML(nombre='minutos_jugados',columna=4) ,
+	CampoCeldaTablaHTML(nombre='puntos',columna=5) ,
+	CampoCeldaTablaHTML(nombre='tiros_de_dos',columna=6) ,
+	CampoCeldaTablaHTML(nombre='tiros_de_tres',columna=7) ,
+	CampoCeldaTablaHTML(nombre='tiros_libres',columna=8) ,
+	CampoCeldaTablaHTML(nombre='rebotes',columna=9) ,
+	CampoCeldaTablaHTML(nombre='asistencias',columna=10) ,
+	CampoCeldaTablaHTML(nombre='balones_recuperados',columna=11) ,
+	CampoCeldaTablaHTML(nombre='balones_perdidos',columna=12) ,
+	CampoCeldaTablaHTML(nombre='valoracion',columna=18)
+    ]
+    
+    _tabla = TablaHTML(campos=_campos,ruta_xpath = '/html/body/table/tbody/tr[2]/td/table[3]',
     fila_inicio = 3, filas_sin_leer_al_final = 2)
     
     @property
@@ -108,24 +107,3 @@ class ParserPartidosJugador(ParserHtml):
     def clase_modelo(self):
 	return self._modelo
     
-    _campos = {
-	'equipos' : CampoCeldaTablaHTML(columna=3,ruta_adicional='/a') ,
-	'minutos_jugados' : CampoCeldaTablaHTML(columna=4) ,
-	'puntos' : CampoCeldaTablaHTML(columna=5) ,
-	'tiros_de_dos' : CampoCeldaTablaHTML(columna=6) ,
-	'tiros_de_tres' : CampoCeldaTablaHTML(columna=7) ,
-	'tiros_libres' : CampoCeldaTablaHTML(columna=8) ,
-	'rebotes' : CampoCeldaTablaHTML(columna=9) ,
-	'asistencias' : CampoCeldaTablaHTML(columna=10) ,
-	'balones_recuperados' : CampoCeldaTablaHTML(columna=11) ,
-	'balones_perdidos' : CampoCeldaTablaHTML(columna=12) ,
-	'valoracion' : CampoCeldaTablaHTML(columna=18)
-    }
-    
-    @property
-    def campos(self):
-	return self._campos
-    
-    def tratar_valor(self,nombrecampo,valor_original):
-	return valor_original
-

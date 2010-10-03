@@ -22,7 +22,6 @@ def actualizar_tabla():
 	#print "Guardados Jugadores(%s): %s" % (str(posicion),time.ctime())
 	
     milista = ParserPartidosJugador().parsearlista('http://www.acb.com/stspartidojug.php?cod_jugador=B3A&cod_competicion=LACB&cod_edicion=54')
-    
     exportarcsv(milista)
 
 def exportarcsv(lista):

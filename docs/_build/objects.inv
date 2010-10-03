@@ -1,0 +1,9 @@
+# Sphinx inventory version 1
+# Project: webreader
+# Version: 0.1
+webreader.extraccion.ParsersWeb.ParserTablaHtml.clase_modelo attribute intro.html
+webreader.extraccion.ParsersWeb.ParserTablaHtml class intro.html
+webreader.extraccion.ParsersWeb.ParserTablaHtml.tabla attribute intro.html
+webreader.extraccion.ParsersWeb.ParserTablaHtml.parsearlista method intro.html
+webreader.extraccion.ParsersWeb.ParserTablaHtml.tratar_valor method intro.html
+webreader.extraccion.LectorXPath.TablaHTML class intro.html

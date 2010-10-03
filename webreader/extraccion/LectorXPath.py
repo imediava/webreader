@@ -63,21 +63,24 @@ class LectorTablasHtmlXPath(LectorWebsXPath):
 
 class TablaHTML:
 	
-	def __init__(self,ruta_xpath,fila_inicio,filas_sin_leer_al_final):
+	def __init__(self,campos,ruta_xpath,fila_inicio,filas_sin_leer_al_final):
 		self.ruta_xpath = ruta_xpath
 		self.fila_inicio = fila_inicio
 		self.filas_sin_leer_al_final = filas_sin_leer_al_final
+		self.campos = campos
 		
 		
 class CampoCeldaTablaHTML:
 	
-	def __init__(self,columna,decimal=False,ruta_adicional=''):
+	def __init__(self,nombre,columna,tratar_valor=lambda x: x,decimal=False,ruta_adicional=''):
 		"""
 		La columna es empezando por el 1.
 		"""
+		self.nombre = nombre
 		self.columna = columna
 		self.decimal = decimal
 		self.ruta_adicional = ruta_adicional
+		self.tratar_valor = tratar_valor
 		
 
 import locale
