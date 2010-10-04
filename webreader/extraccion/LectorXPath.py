@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: latin-1 -*-
 from BeautifulSoup import BeautifulSoup
+from collections import MutableMapping
 
 
 
@@ -44,44 +45,166 @@ class LectorWebsXPath(object):
 
 class LectorTablasHtmlXPath(LectorWebsXPath):
 	
-	def __init__(self,xpathtabla,cadenahtml):
+	def __init__(self,tabla_Html,cadenahtml):
 		super(LectorTablasHtmlXPath,self).__init__(cadenahtml)
-		self.xpathtabla = xpathtabla
+		self.tabla_Html = tabla_Html
+	
+	def obtener_tabla(self):
+		""" Devuelve una tabla con el contenido de la tabla html."""
+		# Crear tabla y rellenarla con contenido
+		tabla = Tabla(self.tabla_Html.obtener_nombres_columnas())
+		fila_fin = len(self.obtener_todos(self.tabla_Html.ruta_xpath,'tr'))
+		ultima_fila_a_leer = fila_fin - self.tabla_Html.filas_sin_leer_al_final
+		# Ahora se recorre las filas desde la inicial a la final ambas incluidas
+		for num_fila in range(self.tabla_Html.fila_inicio,ultima_fila_a_leer + 1):
+		    fila = Fila(self.tabla_Html.obtener_nombres_columnas())
+		    for campo in self.tabla_Html.campos:
+			valor_original = self._leer_campo(num_fila,campo)
+			fila.set_cell(campo.nombre,campo.tratar_valor(valor_original))
+		    tabla.add_row(fila)
+		return tabla
+		        
 		
-	def leer_campo(self,fila,campo):
-		return self.obtener_valor_celda(fila,campo.columna,campo.decimal,campo.ruta_adicional)
+	def _leer_campo(self,fila,campo):
+		return self._obtener_valor_celda(fila,campo.columna,campo.decimal,campo.ruta_adicional)
 
-	def obtener_valor_celda(self,fila,columna,decimal=False,ruta_adicional=''):
-		valor = self.obtener_valor(self.obtener_xpath_celda(self.xpathtabla,fila,columna) + ruta_adicional)	
+	def _obtener_valor_celda(self,fila,columna,decimal=False,ruta_adicional=''):
+		valor = self.obtener_valor(self._obtener_xpath_celda(self.tabla_Html.ruta_xpath,fila,columna) + ruta_adicional)	
 		if decimal:
 			return tofloat(valor)
 		return valor
 
-	def obtener_xpath_celda(self,xpathtabla,fila,columna):
+	def _obtener_xpath_celda(self,xpathtabla,fila,columna):
 		return "%s/tr[%s]/td[%s]" % (xpathtabla,fila,columna)
 		
 
-class TablaHTML:
+class ModeloTablaHTML(object):
+	""" Esqueleto con los datos necesarios para leer una tabla HTML."""
 	
 	def __init__(self,campos,ruta_xpath,fila_inicio,filas_sin_leer_al_final):
 		self.ruta_xpath = ruta_xpath
 		self.fila_inicio = fila_inicio
 		self.filas_sin_leer_al_final = filas_sin_leer_al_final
 		self.campos = campos
+	
+	def obtener_nombres_columnas(self):
+		return [campo.nombre for campo in self.campos]
 		
 		
-class CampoCeldaTablaHTML:
+class ModeloColumnaTablaHTML(object):
+	""" Datos para leer una columna de una tabla HTML."""
 	
 	def __init__(self,nombre,columna,tratar_valor=lambda x: x,decimal=False,ruta_adicional=''):
 		"""
-		La columna es empezando por el 1.
+		
 		"""
 		self.nombre = nombre
 		self.columna = columna
 		self.decimal = decimal
 		self.ruta_adicional = ruta_adicional
 		self.tratar_valor = tratar_valor
+
+
+class Tabla(object):
+	""" Table object. """
+	
+	def __init__(self,column_names):
+		""" Create the table.
 		
+		Keyword parameters:
+		
+		column_names -- List of names of the columns.
+		
+		"""
+		self.row_count = 0
+		self.dict = {}
+		for col_name in column_names:
+			self.dict[col_name] = []
+	
+	def add_row(self,row):
+		""" Adds a row to the table. 		"""
+		self.row_count += 1
+		for col_name,value in self.dict.items():
+			value.append(row[col_name])
+	
+	def get_row(self, row_index):
+		""" Returns the row marked by row_index.
+		
+		Keyword parameters:
+		
+		row_index -- Index of the row to get
+		
+		"""
+		row = {}
+		for col_name,value in self.dict.items():
+			row[col_name] = value[row_index]
+		return row
+	
+	def get_all_rows(self):
+		""" Devuelve un iterador sobre todas las filas de la tabla."""
+		for row_index in range(0,self.row_count):
+			yield self.get_row(row_index)
+		
+	
+	def get_cell(self, column_name, row_index):
+		""" Returns the cell marked by the column_name and the row_index.
+		
+		Keyword parameters:
+		
+		column_name -- Name of the cell's column
+		row_index -- Index of the row
+		
+		"""
+		return self.get_row(row_index)[column_name]
+		
+
+class Fila(MutableMapping):
+	
+	def __init__(self, column_names):
+		""" Create the row.
+		
+		Keyword parameters:
+		
+		column_names -- List of names of the columns.
+		
+		"""
+		self.dict = {}
+		for col_name in column_names:
+			self.dict[col_name] = []
+	
+	def set_cell(self, column_name, value):
+		""" Set the value of a cell.
+		
+		Keyword parameters:
+		
+		column_name -- Name of the column
+		value -- New value for the row
+		
+		"""
+		self.dict[column_name] = value
+		
+	def get_cell(self,column_name):
+		""" Returns the value of a cell."""
+		return self.dict[column_name]
+	
+	def __setitem__(self,key,value):
+		self.set_cell(key,value)
+	
+	def __getitem__(self,key):
+		return self.get_cell(key)
+		
+	def __delitem__(self,key):
+		del self.dict[key]
+		
+	def __iter__(self):
+		self.dict.__iter__()
+	
+	def __len__(self):
+		return self.dict.__len__()
+		
+		
+		
+
 
 import locale
 #Asigna como local el es_UTF8

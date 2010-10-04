@@ -2,6 +2,7 @@
 # -*- coding: latin-1 -*-
 
 from webreader.extraccion.acceso import enumPosiciones
+from webreader.extraccion.acceso import AccesoHTTP
 from webreader.extraccion.ParsersWeb import ParserJugadores,ParserPartidosJugador
 
 import locale
@@ -20,8 +21,9 @@ def actualizar_tabla():
         #print lista[0].nombre
 	
 	#print "Guardados Jugadores(%s): %s" % (str(posicion),time.ctime())
-	
-    milista = ParserPartidosJugador().parsearlista('http://www.acb.com/stspartidojug.php?cod_jugador=B3A&cod_competicion=LACB&cod_edicion=54')
+    url = 'http://www.acb.com/stspartidojug.php?cod_jugador=B3A&cod_competicion=LACB&cod_edicion=54'
+    cadena = AccesoHTTP().obtenerFicheroPagina(url)
+    milista = ParserPartidosJugador().parsearlista(cadena)
     exportarcsv(milista)
 
 def exportarcsv(lista):

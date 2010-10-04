@@ -7,13 +7,19 @@ from webreader.utiles.enums import Enum
 FICHERO_DATOS_USUARIO = 'WebContent/datosUsuarioSM.txt'
 enumPosiciones = Enum("base","alero","pivot")
 
+# Acceso General
 HTTP_CODE_OK = 200
 HTTP_CODE_ACCEPTED = 202
 HTTP_CODE_FOUND = 302
 
+#Supermanager
 
-# Acceso General
+#Campos de autentificacion en el supermanager
+CAMPO_AUTENTIF_USUARIO = 'usuario'
+CAMPO_AUTENTIF_CLAVE = 'clave'
+CAMPO_AUTENTIF_CONTROL = 'control'
 		
+# Acceso General
 class AccesoHTTP(object):	
 
 	def iniciarConexion(self,url,datos):
@@ -36,21 +42,16 @@ class AccesoHTTP(object):
 		auth_resp = urllib2.urlopen(auth_req)
 		return auth_resp
 
-#Supermanager
 
-#Campos de autentificacion en el supermanager
-CAMPO_AUTENTIF_USUARIO = 'usuario'
-CAMPO_AUTENTIF_CLAVE = 'clave'
-CAMPO_AUTENTIF_CONTROL = 'control'
 
 class AccesoHTTPSupermanager(AccesoHTTP):
 	
 	def __init__(self, datos={}, url_conex=""):
 		if datos == {}:
 			self.datosUsuario = {}
-			self.datosUsuario['usuario'] = 'imediava'
-			self.datosUsuario['clave'] = 'quetepet'
-			self.datosUsuario['control'] = '1'
+			self.datosUsuario[CAMPO_AUTENTIF_USUARIO] = 'imediava'
+			self.datosUsuario[CAMPO_AUTENTIF_CLAVE] = 'quetepet'
+			self.datosUsuario[CAMPO_AUTENTIF_CONTROL] = '1'
 			
 		if url_conex == "":
 			self.url_conexion = 'http://supermanager.acb.com/index.php'
