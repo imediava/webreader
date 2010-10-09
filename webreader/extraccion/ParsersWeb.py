@@ -13,9 +13,10 @@ class ParserHtml:
     
     __metaclass__ = ABCMeta
     
+    
     """ Contiene metodos comunes para tratar el acceso a web """
     
-    def parsearlista(self,cadena):
+    def parsearlista(self,cadena,lector_tablas):
         tabla = LectorTablasHtmlXPath(self.modelo_tabla,cadena).obtener_tabla()
         lista = []
 	# Ahora se recorre las filas de la tabla
