@@ -32,16 +32,20 @@ class TablaHtml(object):
 
 
 class CampoTablaHtml(object):
-
-    def __init__(self,columna, ruta_adicional):
+    
+    def __init__(self,columna, ruta_adicional='',tratar_valor=lambda x: x,decimal=False):
     	self.columna = columna
     	self.ruta_adicional = ruta_adicional
+        self.tratar_valor = tratar_valor
+        self.decimal = decimal
 
     def __call__(self,function):
 	function.func_dict[COLUMN_ATTR_KEY] = \
                     ModeloColumnaTablaHTML(nombre=function.func_name, \
                                            columna=self.columna,\
-                                           ruta_adicional=self.ruta_adicional)
+                                           ruta_adicional=self.ruta_adicional,\
+                                           tratar_valor = self.tratar_valor,\
+                                           decimal = self.decimal)
         return function
 
 

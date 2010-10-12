@@ -13,7 +13,10 @@ FILA_FIN=4
 # Columns values
 COLUMNA1 = 4
 COLUMNA2 = 3
+COLUMNA3 = 5
 RUTA_ADICIONAL = '/a/font'
+LAMBDA_DOBLE = lambda x: 2*x
+DECIMAL_PRUEBA = True
 
 @TablaHtml(ruta_xpath=RUTA_XPATH,fila_inicio=FILA_INI,filas_sin_leer_al_final=FILA_FIN)
 class ModeloDecoradoPrueba(object):
@@ -27,14 +30,28 @@ class ModeloDecoradoPrueba(object):
     def field2(self):
         pass
 
-class CampoTablaHtmlTestCase(unittest.TestCase):
-    """ Tests del decorador CampoTablaHtml. """
+    @CampoTablaHtml(columna=COLUMNA3,tratar_valor=LAMBDA_DOBLE)
+    def field3(self):
+        pass
+    
+    @CampoTablaHtml(columna=COLUMNA3,decimal=DECIMAL_PRUEBA)
+    def field4(self):
+        pass
+    
+    
+class TablaHtmlTestCase(unittest.TestCase):
+    """ Decorators tests.
+    
+    Test for decorators TablaHtml y CampoTablaHtml.
+    
+    """
     
     def setUp(self):
         self.table = ModeloDecoradoPrueba.table_html_attr
         self.column1 = self.table.get_column('field1')
         self.column2 = self.table.get_column('field2')
-	
+	self.column3 = self.table.get_column('field3')
+	self.column4 = self.table.get_column('field4')
     
 
     def test_atributos_correctos_tabla(self):
@@ -54,6 +71,18 @@ class CampoTablaHtmlTestCase(unittest.TestCase):
         self.assertEqual(RUTA_ADICIONAL,self.column1.ruta_adicional)
         self.assertEqual(RUTA_ADICIONAL,self.column2.ruta_adicional)
         
-#Comprobar que solo se pasen atributos validos para cada decorador sino Excepc.
+        #Comprobar asignacion atributo tratar_valor
+        self.assertEqual(LAMBDA_DOBLE, self.column3.tratar_valor)
+        
+        #Comprobar asignacion atributo decimal
+        self.assertEqual(DECIMAL_PRUEBA, self.column4.decimal)
+        
+        #Comprobar atributos por defecto
+        self.assertEqual(False,self.column1.decimal)
+        self.assertEqual('',self.column3.ruta_adicional)
+        
+        
 
-#Comprobar que TablaHtml decora una clase
+# Comprobar que no haya dos campos anotados y que tienen el mismo nombre
+# Ej: @Campo...field1 y @Campo....field1 porque entonces se queda con los
+# parametros de configuracion del segundo
