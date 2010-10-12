@@ -85,9 +85,24 @@ class ModeloTablaHTML(object):
 		self.ruta_xpath = ruta_xpath
 		self.fila_inicio = fila_inicio
 		self.filas_sin_leer_al_final = filas_sin_leer_al_final
-		self.campos = campos
+		self._campos = campos
+	
+	@property
+	def campos(self):
+		return self._campos
+	
+	def get_column(self,name):
+		""" Gets the column by the name if it exists otherwise None."""
+		campos = [ column for column
+			in self.campos
+			if column.nombre == name]
+		if len(campos) == 1:
+			return campos[0]
+		else:
+			return None
 	
 	def obtener_nombres_columnas(self):
+		""" Gets the columns' names."""
 		return [campo.nombre for campo in self.campos]
 		
 		

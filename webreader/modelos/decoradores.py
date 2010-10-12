@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-#!/usr/bin/python
 
 from webreader.extraccion.LectorXPath import ModeloColumnaTablaHTML
 from webreader.extraccion.LectorXPath import ModeloTablaHTML
